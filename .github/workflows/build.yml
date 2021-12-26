@@ -1,0 +1,14 @@
+name: Build
+
+on:
+  push:
+    branches: [ production, main ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-20.04
+    steps:
+
+      - name: Fake Build
+        run: exit 0
