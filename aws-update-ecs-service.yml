@@ -1,0 +1,29 @@
+name: Deploy
+
+on:
+  workflow_call:
+    secrets:
+      AWS_ID:
+        required: true
+      AWS_TOKEN:
+        required: true
+      AWS_REGION:
+        required: true
+      AWS_CLUSTER:
+        required: true
+      AWS_SERVICE:
+        required: true
+
+jobs:
+  build:
+    runs-on: ubuntu-20.04
+    steps:
+    
+    - name: Login to AWS
+      run: |
+        aws configure set aws_access_key_id ${{ secrets.AWS_ID }}
+        aws configure set aws_secret_access_key ${{ secrets.AWS_TOKEN }}
+        aws configure set default.region ${{ secrets.AWS_REGION }}
+    
+    - name: Run Deploy Command
+      run: aws ecs update-service --cluster ${{ secrets.AWS_CLUSTER }} --service ${{ secrets.AWS_SERVICE }} --force-new-deployment
