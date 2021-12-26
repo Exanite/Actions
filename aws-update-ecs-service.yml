@@ -1,4 +1,4 @@
-name: Deploy
+name: Update AWS ECS Service
 
 on:
   workflow_call:
