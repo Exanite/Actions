@@ -5,8 +5,10 @@ on:
     inputs:
       dockerRepository:
         required: true
+        type: string
       dockerfilePath:
         required: true
+        type: string
         default: .
     secrets:
       dockerRegistry:
