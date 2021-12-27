@@ -1,0 +1,51 @@
+name: Build Docker Image and Push
+
+on:
+  workflow_call:
+    inputs:
+      dockerRepository:
+        required: true
+      dockerfilePath:
+        required: true
+        default: .
+    secrets:
+      dockerRegistry:
+        required: true
+      dockerUsername:
+        required: true
+      dockerToken:
+        required: true
+
+jobs:
+  build:
+    runs-on: ubuntu-20.04
+    steps:
+
+      - name: Login to Docker
+        uses: docker/login-action@v1.12.0
+        with:
+          registry: ${{ secrets.dockerRegistry }}
+          username: ${{ secrets.dockerUsername }}
+          password: ${{ secrets.dockerToken }}
+
+      - name: Checkout Repository
+        uses: actions/checkout@v2.3.2
+        with:
+          lfs: false
+          
+      - name: Get branch name
+        run: echo "##[set-output name=name;]$(echo ${GITHUB_REF#refs/heads/})"
+        id: branch
+      
+      - name: Get image name
+        run: echo "##[set-output name=name;]$(echo ${{ secrets.dockerRegistry }}/${{ inputs.dockerRepository }}:${{ steps.branch.outputs.name }})"
+        id: image
+
+      - name: Build Image
+        run: |
+          docker build \
+          -t ${{ steps.image.outputs.name }} \
+          --progress=plain ${{ inputs.dockerfilePath }}
+        
+      - name: Push Image
+        run: docker push ${{ steps.image.outputs.name }} \
