@@ -5,10 +5,13 @@ on:
     inputs:
       awsRegion:
         required: true
+        type: string
       awsCluster:
         required: true
+        type: string
       awsService:
         required: true
+        type: string
     secrets:
       awsId:
         required: true
