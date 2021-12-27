@@ -2,16 +2,17 @@ name: Update AWS ECS Service
 
 on:
   workflow_call:
+    inputs:
+      awsRegion:
+        required: true
+      awsCluster:
+        required: true
+      awsService:
+        required: true
     secrets:
-      AWS_ID:
+      awsId:
         required: true
-      AWS_TOKEN:
-        required: true
-      AWS_REGION:
-        required: true
-      AWS_CLUSTER:
-        required: true
-      AWS_SERVICE:
+      awsToken:
         required: true
 
 jobs:
@@ -21,9 +22,9 @@ jobs:
     
     - name: Login to AWS
       run: |
-        aws configure set aws_access_key_id ${{ secrets.AWS_ID }}
-        aws configure set aws_secret_access_key ${{ secrets.AWS_TOKEN }}
-        aws configure set default.region ${{ secrets.AWS_REGION }}
+        aws configure set aws_access_key_id ${{ secrets.awsId }}
+        aws configure set aws_secret_access_key ${{ secrets.awsToken }}
+        aws configure set default.region ${{ inputs.awsRegion }}
     
     - name: Run Deploy Command
-      run: aws ecs update-service --cluster ${{ secrets.AWS_CLUSTER }} --service ${{ secrets.AWS_SERVICE }} --force-new-deployment
+      run: aws ecs update-service --cluster ${{ inputs.awsCluster }} --service ${{ inputs.awsService }} --force-new-deployment
